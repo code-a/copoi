@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>OpenMapGen</title>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="leaflet.css" />
+	<link rel="stylesheet" href="Control.Geocoder.css" />
+	<link rel="stylesheet" href="main.css" />
+	<script src="jquery-3.1.1.min.js"></script>
+	<script src="leaflet.js"></script>
+	<script src="Control.Geocoder.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+	      <div class="container">
+	        <div class="navbar-header">
+	          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+	            <span class="sr-only">Toggle navigation</span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	          </button>
+	          <a class="navbar-brand" href="#">OpenMapGen</a>
+	        </div>
+	        <div id="navbar" class="collapse navbar-collapse">
+	          <ul class="nav navbar-nav">
+	            <li><a href="#addPoint">Add</a></li>
+	            <li><a href="#point_list">List</a></li>
+	            <li><a href="#map_gen">Generator</a></li>
+							<li><a href="#settings">Settings</a></li>
+	          </ul>
+	        </div><!--/.nav-collapse -->
+	      </div>
+	    </nav>
+	<div class="container">
+		<div class="main_container">
+			<h1>Add Point</h1>
+			<div id="mapid" class="col-md-6" style=" height: 400px;"></div>
+
+			<div id="addPoint" class="col-md-6 text-left">
+
+				<div id="point_form" class="col-md-12">
+					<form class="form-horizontal">
+					  <div class="form-group">
+					    <label for="point_lat" class="col-sm-4 control-label">Latitude</label>
+					    <div class="col-sm-8">
+					      <input type="text" class="form-control" id="point_lat" placeholder="lat" readonly>
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <label for="point_lng" class="col-sm-4 control-label">Longitude</label>
+					    <div class="col-sm-8">
+					      <input type="text" class="form-control" id="point_lng" placeholder="lng" readonly>
+					    </div>
+					  </div>
+						<div class="form-group">
+					    <label for="point_lng" class="col-sm-4 control-label">Titel:</label>
+					    <div class="col-sm-8">
+					      <input type="text" class="form-control" id="point_title" placeholder="lng">
+					    </div>
+					  </div>
+						<div class="form-group">
+					    <label for="point_date" class="col-sm-4 control-label">Datum:</label>
+					    <div class="col-sm-8">
+					      <input type="text" class="form-control" id="point_date" placeholder="dd.mm.yyyy">
+					    </div>
+					  </div>
+						<div class="form-group">
+					    <label for="point_lng" class="col-sm-4 control-label">Beschreibung:</label>
+					    <div class="col-sm-8">
+								<textarea class="form-control" rows="5" id="point_description" placeholder="description ..."></textarea>
+					      <!--input type="text" class="form-control" id="point_description" placeholder="lng" readonly-->
+					    </div>
+					  </div>
+						<div class="form-group">
+					    <label for="point_lng" class="col-sm-4 control-label">Link:</label>
+					    <div class="col-sm-8">
+					      <input type="text" class="form-control" id="point_link" placeholder="lng">
+					    </div>
+					  </div>
+					  <div class="form-group">
+					    <div class="col-sm-offset-2 col-sm-10">
+					      <button type="button" class="btn btn-default" onclick="VCAddPoint()">Add Point</button>
+					    </div>
+					  </div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div id="point_list" class="col-sm-12">
+			<h1>Points</h1>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+					  <th>Title</th>
+						<th>Latitude</th>
+						<th>Longitude</th>
+						<th>Description</th>
+						<th>Link</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody id="points_table_body">
+
+				</tbody>
+			</table>
+
+		</div>
+		<div id="map_gen" class="col-sm-12">
+			<h1>Map Generator</h1>
+			- MarkerImage<br/>
+			- Add form<br/>
+
+			<textarea class="form-control" rows="10" id="generated_geojson" placeholder="GeoJSON" readonly></textarea>
+		</div>
+		<div id="settings" class="col-sm-12">
+			<h1>Settings</h1>
+			- import project data<br/>
+			- export project data<br/>
+			<h2>Import GeoJSON</h2>
+			<textarea class="form-control" rows="10" id="to_import_geojson" placeholder="GeoJSON"></textarea>
+			<button type="button" class="btn btn-primary" onclick="restoreFromGeoJson()">Import</button>
+		</div>
+	</div>
+
+
+
+
+<script>
+	var mymap = L.map('mapid').setView([51.505, -0.09], 13);
+
+	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+		maxZoom: 18,
+		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+			'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+			'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+		id: 'mapbox.streets'
+	}).addTo(mymap);
+	L.Control.geocoder().addTo(mymap);
+
+
+	var popup = L.popup();
+
+
+	mymap.on('click', VCMapPointClicked);
+
+
+
+
+	function encodeJsonString(inputString) {
+		inputString = inputString.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+		var stringLength = inputString.length;
+		for(var i=0; i<stringLength; i++) {
+			if((inputString[i] == '"') || (inputString[i] == "'") || (inputString[i] == "„")) {
+				inputString[i] = '';
+			}
+		}
+		return inputString;
+	}
+
+	function restoreFromGeoJson() {
+		var geoJsonData = $('#to_import_geojson').val();
+		var loadedFeatureCollection = JSON.parse(geoJsonData);
+		featureCollection = loadedFeatureCollection;
+		renderPointsTable();
+	}
+
+	function renderPointsTable() {
+
+		//var points = featureCollection.features;
+		var points = PoiCollection.store;
+		var content="";
+
+		for(var i=0; i<points.length; i++)
+		{
+			content += "<tr>";
+			//alert(JSON.stringify(points[i]));
+			content += "<td>" + points[i].lat + "</td>";
+			content += "<td>" + points[i].lng + "</td>";
+			for(var j=0; j<points[i].attributes.length; j++)
+			{
+				content += "<td>" + points[i].attributes[j].value + "</td>";
+			}
+			content += "<td><button class='btn btn-danger' onclick='VCDeletePoint(" + points[i].lat + ", " + points[i].lng + ")'>delete</button></td></tr>";
+		}
+
+		$("#points_table_body").html(content);
+		genGeoJson();
+
+	}
+
+	function genGeoJson() {
+		$("#generated_geojson").val(JSON.stringify(PoiCollection.store));
+	}
+
+	function deletePoint(lat, lng)
+	{
+		var points = featureCollection.features;
+		for(var i=0; i <points.length; i++)
+		{
+			if(
+				featureCollection.features[i].geometry.coordinates[0] == lng &&
+				featureCollection.features[i].geometry.coordinates[1] == lat
+			)
+			{
+				featureCollection.features.splice(i);
+				renderPointsTable();
+			}
+		}
+	}
+
+///////////////////////
+// ViewControllers
+///////////////////////
+
+// properties
+var selected_lat;
+var selected_lng;
+
+// Add Point
+var VCAddPoint = function(){
+	var feature_lat = selected_lat;
+	var feature_lng = selected_lng;
+
+	var poiAttributes = [];
+	poiAttributes.push(new Attribute("Title", "string", encodeJsonString($("#point_title").val())));
+	poiAttributes.push(new Attribute("Date", "date", encodeJsonString($("#point_date").val())));
+	poiAttributes.push(new Attribute("Description", "string", encodeJsonString($("#point_description").val())));
+	poiAttributes.push(new Attribute("Link", "link", encodeJsonString($("#point_link").val())));
+
+	//TODO: throw error if lat or lng is undefined
+	var newPoi = new Poi(feature_lat, feature_lng, poiAttributes);
+	PoiCollection.add(newPoi);
+	//alert(JSON.stringify(newPoi));
+
+	renderPointsTable();
+
+	//var geojson = L.geoJSON(featureCollection).addTo(mymap);
+	//mymap.fitBounds(geojson.getBounds());
+};
+
+var VCDeletePoint = function(_lat, _lng) {
+	PoiCollection.delete(_lat, _lng);
+	renderPointsTable();
+};
+
+function VCMapPointClicked(e){
+	$("#point_lat").val(e.latlng.lat);
+	selected_lat=e.latlng.lat;
+	$("#point_lng").val(e.latlng.lng);
+	selected_lng=e.latlng.lng;
+};
+
+
+///////////////////////
+// Library
+///////////////////////
+
+
+
+	var Poi = function (_lat, _lng, _attributes){
+		this.lat = _lat;
+		this.lng = _lng;
+		this.attributes = _attributes;
+	};
+
+	var Attribute = function (_name, _type, _value) {
+		this.name = _name;
+		this.type = _type;
+		this.value = _value;
+	};
+
+	//TODO: use localStorage
+	var PoiCollection = {
+		store: [],
+		add: function(_poi) {
+			this.store.push(_poi);
+			localStorage.setItem("PoiCollection", JSON.stringify(this.store));
+		},
+		delete: function(_lat, _lng) {
+			for(var i=0; i <this.store.length; i++)
+			{
+				if(
+					this.store[i].lng == _lng &&
+					this.store[i].lat == _lat
+				)
+				{
+					this.store.splice(i);
+				}
+			}
+		},
+		update: function(_oldPoi, _newPoi) {
+			for(var i=0; i <this.store.length; i++)
+			{
+				if(
+					this.store[i].lng == _oldPoi.lng &&
+					this.store[i].lat == _oldPoi.lat
+				)
+				{
+					//TODO: just assign _newPoi...
+					this.store[i].lng = _newPoi.lng;
+					this.store[i].lat = _newPoi.lat;
+					this.store[i].attributes = _newPoi.attributes;
+
+					return true;
+				}
+			}
+			return false;
+		}
+	};
+
+
+	/////////////////////////
+	// GeoJSON Generation
+	/////////////////////////
+
+	var FeatureCollection = function (){
+		this.type = "FeatureCollection";
+		this.features = [];
+	};
+
+	var FeaturePoint = function (geoPoint) {
+		this.type = "Feature";
+		this.properties = {};
+		this.geometry = geoPoint;
+	}
+
+	var FeaturePointGeo = function (lat, lng) {
+		this.type = "Point";
+		this.coordinates = [lng, lat];
+	}
+
+	var FeatureCollection = {
+		fromPoiCollection: function(_poiCollection) {
+			var featureCollection = new FeatureCollection();
+
+			for(var i = 0; i < _poiCollection.length; i++) {
+
+
+				var feature_lat = _poiCollection[i].lat;
+				var feature_lng = _poiCollection[i].lng;
+
+				var curPointGeo = new FeaturePointGeo(feature_lat, feature_lng);
+				var curPoint = new FeaturePoint(curPointGeo);
+				curPoint.properties.popupContent = "";
+
+				for(var j = 0; j < _poiCollection[i].attributes.length; j++)
+				{
+					//TODO: escape value
+					curPoint.properties[_poiCollection[i].attributes[j].name] = _poiCollection[i].attributes[j].value;
+					curPoint.properties.popupContent += "<b>" + _poiCollection[i].attributes[j].name + ":</b> " + _poiCollection[i].attributes[j].value + "</br>";
+				}
+
+				featureCollection.features.push(curPoint);
+			}
+			return featureCollection;
+		}
+	};
+</script>
+
+
+
+</body>
+</html>
