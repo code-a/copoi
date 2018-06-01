@@ -38,7 +38,7 @@
 	            <li><a href="#addPoint">Add</a></li>
 	            <li><a href="#point_list">List</a></li>
 	            <li><a href="#map_gen">Generator</a></li>
-							<li><a href="#settings">Settings</a></li>
+		    <li><button class="btn btn-link" onclick="downloadPoi()">Download</button></li>
 	          </ul>
 	        </div><!--/.nav-collapse -->
 	      </div>
@@ -272,6 +272,19 @@ function resetAddPoiForm() {
 	$("#point_lng").val("");
 	selected_lat = undefined;
 	selected_lng = undefined;
+}
+	
+function downloadPoi() {
+	var a = window.document.createElement('a');
+	a.href = window.URL.createObjectURL(new Blob([JSON.stringify(PoiCollection.store)], {type: 'text/json'}));
+	a.download = 'map,json';
+
+	// Append anchor to body.
+	document.body.appendChild(a);
+	a.click();
+
+	// Remove anchor from body
+	document.body.removeChild(a);
 }
 	
 ///////////////////////
