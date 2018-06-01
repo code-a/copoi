@@ -246,7 +246,7 @@ var VCAddPoint = function(){
 	//alert(JSON.stringify(newPoi));
 
 	renderPointsTable();
-
+	resetAddPoiForm();
 	//var geojson = L.geoJSON(featureCollection).addTo(mymap);
 	//mymap.fitBounds(geojson.getBounds());
 };
@@ -263,7 +263,17 @@ function VCMapPointClicked(e){
 	selected_lng=e.latlng.lng;
 };
 
+///////////////////////
+// Helpers
+///////////////////////
 
+function resetAddPoiForm() {
+	$("#point_lat").val("");
+	$("#point_lng").val("");
+	selected_lat = undefined;
+	selected_lng = undefined;
+}
+	
 ///////////////////////
 // Library
 ///////////////////////
