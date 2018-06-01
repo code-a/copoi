@@ -277,7 +277,7 @@ function resetAddPoiForm() {
 function downloadPoi() {
 	var a = window.document.createElement('a');
 	a.href = window.URL.createObjectURL(new Blob([JSON.stringify(PoiCollection.store)], {type: 'text/json'}));
-	a.download = 'map,json';
+	a.download = 'poi_store.json';
 
 	// Append anchor to body.
 	document.body.appendChild(a);
