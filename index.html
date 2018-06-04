@@ -124,71 +124,31 @@
 
 		</div>
 		<div id="import" class="col-sm-12">
-			<div id="drop_zone">Drop files here</div>
-			<output id="list"></output>
+			<!--div id="drop_zone">Drop files here</div>
+			<output id="list"></output-->
+			<input type="file" id="fileInput">
 
 			<script>
-			  function handleFileSelect(evt) {
-			    evt.stopPropagation();
-			    evt.preventDefault();
+			var fileInput = document.getElementById('fileInput');
+			var fileDisplayArea = document.getElementById('fileDisplayArea');
 
-			    var files = evt.dataTransfer.files; // FileList object.
+			fileInput.addEventListener('change', function(e) {
+				var file = fileInput.files[0];
+				var textType = /text.*/;
 
-			    // files is a FileList of File objects. List some properties.
-			    var output = [];
-			    for (var i = 0, f; f = files[i]; i++) {
-			      output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
-					  f.size, ' bytes, last modified: ',
-					  f.lastModifiedDate.toLocaleDateString(), '</li>');
-			    }
-			    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
-			  }
+				if (file.type.match(textType)) {
+					var reader = new FileReader();
 
-			  function handleDragOver(evt) {
-			    evt.stopPropagation();
-			    evt.preventDefault();
-			    evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-			  }
+					reader.onload = function(e) {
+						//fileDisplayArea.innerText = reader.result;
+						PoiCollection.store = JSON.parse(reader.result);
+					}
 
-			  // Setup the dnd listeners.
-			  var dropZone = document.getElementById('drop_zone');
-			  dropZone.addEventListener('dragover', handleDragOver, false);
-			  dropZone.addEventListener('drop', handleFileSelect, false);
-				
-				
-				
-			function handleFileSelect(evt) {
-			    var files = evt.target.files; // FileList object
-
-			    // Loop through the FileList and render image files as thumbnails.
-			    for (var i = 0, f; f = files[i]; i++) {
-
-			      // Only process image files.
-			      if (!f.type.match('image.*')) {
-				continue;
-			      }
-
-			      var reader = new FileReader();
-
-			      // Closure to capture the file information.
-			      	reader.onload = function(e) {
-				  var text = reader.result;
+					reader.readAsText(file);	
+				} else {
+					//fileDisplayArea.innerText = "File not supported!"
 				}
-				/*
-			      reader.onload = (function(theFile) {
-				return function(e) {
-				  // Render thumbnail.
-				  var span = document.createElement('span');
-				  span.innerHTML = ['<img class="thumb" src="', e.target.result,
-						    '" title="', escape(theFile.name), '"/>'].join('');
-				  document.getElementById('list').insertBefore(span, null);
-				};
-			      })(f);
-				*/
-			      // Read in the image file as a data URL.
-			      reader.readAsText(f);
-			    }
-			  }
+			});
 			</script>
 			
 		</div>
