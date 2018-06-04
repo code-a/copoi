@@ -102,9 +102,26 @@
 		
 		<div class="col-md-12 row" style="padding-top: 20px;">
 		  <button class="btn btn-primary col-md-2" onclick="downloadPoi()">Download Pois</button>
-		  <label class="btn btn-default">
+		  	<form>
+			<div class="row">
+			<div class="col-lg-6">
+			<label for="fileInput">
+			<div class="input-group">
+			<span class="input-group-btn">
+			<button class="btn btn-default" type="button">Browse</button>
+			</span>
+			<input type="text" class="form-control" id="info" readonly="" style="background: #fff;" placeholder="Search for...">
+			</div><!-- /input-group -->
+			</label>
+			</div><!-- /.col-lg-6 -->
+			</div>
+
+			</div>
+			<input type="file" style="display: none;" onchange="$('#info').val($(this).val().split(/[\\|/]/).pop()); " name="file" id="fileInput">
+			</form>
+		  <!--label class="btn btn-default">
 		    Import <input type="file" id="fileInput" hidden>
-		  </label>
+		  </label-->
 		</div>
 		
 		
@@ -130,10 +147,18 @@
 		</div>
 		<div id="import" class="col-sm-12">
 			<!--div id="drop_zone">Drop files here</div>
-			<output id="list"></output-->
-			<input type="file" id="fileInput">
-
+			<output id="list"></output>
+			<input type="file" id="fileInput"-->
+		
 			<script>
+			//for browse button
+			$(function() {
+			    $("label[for=fileInput]").click(function(event) {
+				event.preventDefault();
+				$("#fileInput").click();
+			    });
+			});
+			
 			var fileInput = document.getElementById('fileInput');
 			var fileDisplayArea = document.getElementById('fileDisplayArea');
 
