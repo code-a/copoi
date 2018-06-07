@@ -453,6 +453,7 @@ function downloadPoi() {
 
 				featureCollection.features.push(curPoint);
 			}
+			console.log(JSON.stringify(featureCollection));
 			return featureCollection;
 		}
 	};
