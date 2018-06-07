@@ -448,6 +448,7 @@ function downloadPoi() {
 				{
 					//TODO: escape value
 					curPoint.properties[_poiCollection[i].attributes[j].name] = _poiCollection[i].attributes[j].value;
+					console.log(_poiCollection[i].attributes[j].value);
 					curPoint.properties.popupContent += "<b>" + _poiCollection[i].attributes[j].name + ":</b> " + _poiCollection[i].attributes[j].value + "</br>";
 				}
 
