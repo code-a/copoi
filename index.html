@@ -97,11 +97,12 @@
 					</form>
 				</div>
 			</div>
-			
+
 		</div>
-		
+
 		<div class="col-md-12 row" style="padding-top: 20px;">
-		  <button class="btn btn-primary col-md-2" onclick="downloadPoi()">Download Pois</button>
+		  <button class="btn btn-primary col-md-2" onclick="downloadPoi()">Download GeoJSON</button>
+			<button class="btn btn-primary col-md-2" onclick="downloadProject()">Save Project</button>
 		  	<form>
 			<div class="row">
 			<div class="col-lg-6">
@@ -123,9 +124,9 @@
 		    Import <input type="file" id="fileInput" hidden>
 		  </label-->
 		</div>
-		
-		
-			
+
+
+
 		<div id="point_list" class="col-sm-12">
 			<h1>Points</h1>
 			<table class="table table-striped">
@@ -149,7 +150,7 @@
 			<!--div id="drop_zone">Drop files here</div>
 			<output id="list"></output>
 			<input type="file" id="fileInput"-->
-		
+
 			<script>
 			//for browse button
 			$(function() {
@@ -158,7 +159,7 @@
 				$("#fileInput").click();
 			    });
 			});
-			
+
 			var fileInput = document.getElementById('fileInput');
 			var fileDisplayArea = document.getElementById('fileDisplayArea');
 
@@ -174,13 +175,13 @@
 						PoiCollection.store = JSON.parse(reader.result);
 					}
 
-					reader.readAsText(file);	
+					reader.readAsText(file);
 				} else {
 					//fileDisplayArea.innerText = "File not supported!"
 				}
 			});
 			</script>
-			
+
 		</div>
 		<!--div id="map_gen" class="col-sm-12">
 			<h1>Map Generator</h1>
@@ -337,7 +338,7 @@ function resetAddPoiForm() {
 	selected_lat = undefined;
 	selected_lng = undefined;
 }
-	
+
 function downloadPoi() {
 	var a = window.document.createElement('a');
 	//a.href = window.URL.createObjectURL(new Blob([JSON.stringify(PoiCollection.store)], {type: 'text/json'}));
@@ -351,7 +352,21 @@ function downloadPoi() {
 	// Remove anchor from body
 	document.body.removeChild(a);
 }
-	
+
+function downloadProject() {
+	var a = window.document.createElement('a');
+	a.href = window.URL.createObjectURL(new Blob([JSON.stringify(PoiCollection.store)], {type: 'text/json'}));
+	//a.href = window.URL.createObjectURL(new Blob([JSON.stringify(GeoJsonCollection.fromPoiCollection(PoiCollection.store))], {type: 'text/json'}));
+	a.download = 'poi_store.json';
+
+	// Append anchor to body.
+	document.body.appendChild(a);
+	a.click();
+
+	// Remove anchor from body
+	document.body.removeChild(a);
+}
+
 ///////////////////////
 // Library
 ///////////////////////
